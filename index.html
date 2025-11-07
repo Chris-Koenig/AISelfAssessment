@@ -44,15 +44,15 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Reduce motion for users who prefer it */
+        /* Reduce motion for users who prefer it - accessibility feature */
         @media (prefers-reduced-motion: reduce) {
             body {
                 animation: none;
             }
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
+            *, *::before, *::after {
+                animation-duration: 0s;
+                animation-iteration-count: 1;
+                transition-duration: 0s;
             }
         }
 
@@ -150,6 +150,7 @@
 
         .category-title {
             font-size: 1.5rem;
+            color: #667eea; /* Fallback color for browsers without gradient text support */
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -160,6 +161,14 @@
             border-image: linear-gradient(90deg, #667eea, #764ba2, transparent) 1;
             font-weight: 700;
             letter-spacing: -0.3px;
+        }
+
+        /* Fallback for browsers that don't support background-clip: text */
+        @supports not (-webkit-background-clip: text) {
+            .category-title {
+                color: #667eea;
+                -webkit-text-fill-color: initial;
+            }
         }
 
         .questions-grid {
@@ -245,7 +254,7 @@
             border-color: rgba(102, 126, 234, 0.2);
         }
 
-        /* Progressive enhancement: :has() is supported in modern browsers (Chrome 105+, Safari 15.4+, Firefox 103+)
+        /* Progressive enhancement: :has() is supported in modern browsers (Chrome 105+, Safari 15.4+, Firefox 121+)
            Older browsers will still have functional radio buttons, just without the enhanced selected state styling */
         .radio-option:has(input:checked) {
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
@@ -342,6 +351,7 @@
 
         .contact-info h2 {
             font-size: 1.6rem;
+            color: #667eea; /* Fallback color for browsers without gradient text support */
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -349,6 +359,14 @@
             margin-bottom: 1.75rem;
             font-weight: 700;
             letter-spacing: -0.3px;
+        }
+
+        /* Fallback for browsers that don't support background-clip: text */
+        @supports not (-webkit-background-clip: text) {
+            .contact-info h2 {
+                color: #667eea;
+                -webkit-text-fill-color: initial;
+            }
         }
 
         .form-group {
@@ -620,11 +638,20 @@
 
         .score-value {
             font-weight: 800;
+            color: #667eea; /* Fallback color for browsers without gradient text support */
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             font-size: 1.15rem;
+        }
+
+        /* Fallback for browsers that don't support background-clip: text */
+        @supports not (-webkit-background-clip: text) {
+            .score-value {
+                color: #667eea;
+                -webkit-text-fill-color: initial;
+            }
         }
 
         footer {
