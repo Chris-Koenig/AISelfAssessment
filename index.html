@@ -173,6 +173,74 @@
             font-weight: 500;
         }
 
+        .contact-info {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .contact-info h2 {
+            font-size: 1.4rem;
+            color: #00A0B0;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-group label .required {
+            color: #dc2626;
+            margin-left: 0.25rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus {
+            outline: none;
+            border-color: #00A0B0;
+            box-shadow: 0 0 0 3px rgba(0, 160, 176, 0.1);
+        }
+
+        .form-group input[type="text"].error,
+        .form-group input[type="email"].error {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .form-group .error-message {
+            display: none;
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .form-group .error-message.show {
+            display: block;
+        }
+
         .btn-primary {
             background: linear-gradient(135deg, #00A0B0 0%, #008B9A 100%);
             color: white;
@@ -399,10 +467,24 @@
 
         <main>
             <div class="warning" id="warning" role="alert">
-                <p class="warning-text">Please answer all questions before finishing the assessment.</p>
+                <p class="warning-text">Please complete all required fields and answer all questions before finishing the assessment.</p>
             </div>
 
             <form id="assessmentForm">
+                <div class="contact-info">
+                    <h2>Contact Information</h2>
+                    <div class="form-group">
+                        <label for="companyName">Company Name<span class="required">*</span></label>
+                        <input type="text" id="companyName" name="companyName" required>
+                        <div class="error-message" id="companyNameError">Please enter your company name.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address<span class="required">*</span></label>
+                        <input type="email" id="email" name="email" required>
+                        <div class="error-message" id="emailError">Please enter a valid email address.</div>
+                    </div>
+                </div>
+
                 <div id="questionsContainer"></div>
                 
                 <button type="submit" class="btn-primary">Finish Assessment</button>
@@ -417,6 +499,9 @@
     </div>
 
     <script>
+        // Email validation regex
+        const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
         // Question scales
         const SCALE_A = [
             { label: 'Not at all', value: 0 },
@@ -559,6 +644,10 @@
 
         // State management
         let answers = {};
+        let contactInfo = {
+            companyName: '',
+            email: ''
+        };
 
         // Initialize the form
         function initForm() {
@@ -622,8 +711,25 @@
                 questionsGrid.appendChild(fieldset);
             });
 
+            // Setup contact info fields
+            const companyNameInput = document.getElementById('companyName');
+            const emailInput = document.getElementById('email');
+
+            companyNameInput.addEventListener('input', (e) => {
+                contactInfo.companyName = e.target.value;
+                saveContactInfo();
+                clearFieldError('companyName');
+            });
+
+            emailInput.addEventListener('input', (e) => {
+                contactInfo.email = e.target.value;
+                saveContactInfo();
+                clearFieldError('email');
+            });
+
             // Load saved answers if available
             loadSavedAnswers();
+            loadContactInfo();
         }
 
         // Handle answer change
@@ -672,12 +778,86 @@
             }
         }
 
+        // Save contact info to localStorage
+        function saveContactInfo() {
+            try {
+                localStorage.setItem('ai_assessment_contact', JSON.stringify(contactInfo));
+            } catch (e) {
+                console.warn('Could not save contact information. Your info will not be saved between sessions.', e);
+            }
+        }
+
+        // Load contact info from localStorage
+        function loadContactInfo() {
+            try {
+                const saved = localStorage.getItem('ai_assessment_contact');
+                if (saved) {
+                    contactInfo = JSON.parse(saved);
+                    
+                    // Populate form with saved contact info
+                    const companyNameInput = document.getElementById('companyName');
+                    const emailInput = document.getElementById('email');
+                    
+                    if (companyNameInput && contactInfo.companyName) {
+                        companyNameInput.value = contactInfo.companyName;
+                    }
+                    if (emailInput && contactInfo.email) {
+                        emailInput.value = contactInfo.email;
+                    }
+                }
+            } catch (e) {
+                console.warn('Could not load previously saved contact information. Starting fresh.', e);
+            }
+        }
+
+        // Clear field error
+        function clearFieldError(fieldName) {
+            const input = document.getElementById(fieldName);
+            const errorMessage = document.getElementById(`${fieldName}Error`);
+            
+            if (input) {
+                input.classList.remove('error');
+            }
+            if (errorMessage) {
+                errorMessage.classList.remove('show');
+            }
+        }
+
         // Validate form
         function validateForm() {
             const warning = document.getElementById('warning');
             let isValid = true;
             let firstError = null;
 
+            // Validate contact info
+            const companyNameInput = document.getElementById('companyName');
+            const emailInput = document.getElementById('email');
+            const companyNameError = document.getElementById('companyNameError');
+            const emailError = document.getElementById('emailError');
+
+            // Validate company name - check input value directly
+            const companyNameValue = companyNameInput.value.trim();
+            if (!companyNameValue) {
+                isValid = false;
+                companyNameInput.classList.add('error');
+                companyNameError.classList.add('show');
+                if (!firstError) {
+                    firstError = companyNameInput;
+                }
+            }
+
+            // Validate email - check input value directly
+            const emailValue = emailInput.value.trim();
+            if (!emailValue || !EMAIL_REGEX.test(emailValue)) {
+                isValid = false;
+                emailInput.classList.add('error');
+                emailError.classList.add('show');
+                if (!firstError) {
+                    firstError = emailInput;
+                }
+            }
+
+            // Validate questions
             QUESTIONS.forEach(question => {
                 const fieldset = document.getElementById(`question-${question.id}`);
                 if (answers[question.id] === undefined) {
