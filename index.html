@@ -260,9 +260,8 @@
             border-color: rgba(102, 126, 234, 0.2);
         }
 
-        /* Progressive enhancement: :has() is supported in modern browsers
-           Older browsers will still have functional radio buttons, just without the enhanced selected state styling
-           Note: Browser support continuously evolving - check caniuse.com for latest compatibility */
+        /* Progressive enhancement: :has() is supported in modern browsers (Safari 15.4+, Chrome 105+, Firefox 121+)
+           Older browsers will still have functional radio buttons, just without the enhanced selected state styling */
         .radio-option:has(input:checked) {
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
             border-color: #667eea;
