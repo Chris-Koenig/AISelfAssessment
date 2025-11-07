@@ -44,7 +44,8 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Reduce motion for users who prefer it - accessibility feature */
+        /* Reduce motion for users who prefer it - accessibility feature
+           Allows short transitions for feedback while removing long animations */
         @media (prefers-reduced-motion: reduce) {
             body {
                 animation: none;
@@ -52,7 +53,12 @@
             *, *::before, *::after {
                 animation-duration: 0s;
                 animation-iteration-count: 1;
-                transition-duration: 0s;
+                transition-duration: 0.15s; /* Keep short transitions for immediate feedback */
+            }
+            /* Remove shimmer effects specifically */
+            fieldset::before,
+            .btn-primary::before {
+                display: none;
             }
         }
 
@@ -254,8 +260,9 @@
             border-color: rgba(102, 126, 234, 0.2);
         }
 
-        /* Progressive enhancement: :has() is supported in modern browsers (Chrome 105+, Safari 15.4+, Firefox 121+)
-           Older browsers will still have functional radio buttons, just without the enhanced selected state styling */
+        /* Progressive enhancement: :has() is supported in modern browsers
+           Older browsers will still have functional radio buttons, just without the enhanced selected state styling
+           Note: Browser support continuously evolving - check caniuse.com for latest compatibility */
         .radio-option:has(input:checked) {
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
             border-color: #667eea;
