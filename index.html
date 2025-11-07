@@ -499,6 +499,9 @@
     </div>
 
     <script>
+        // Email validation regex
+        const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
         // Question scales
         const SCALE_A = [
             { label: 'Not at all', value: 0 },
@@ -832,8 +835,9 @@
             const companyNameError = document.getElementById('companyNameError');
             const emailError = document.getElementById('emailError');
 
-            // Validate company name
-            if (!contactInfo.companyName || contactInfo.companyName.trim() === '') {
+            // Validate company name - check input value directly
+            const companyNameValue = companyNameInput.value.trim();
+            if (!companyNameValue) {
                 isValid = false;
                 companyNameInput.classList.add('error');
                 companyNameError.classList.add('show');
@@ -842,9 +846,9 @@
                 }
             }
 
-            // Validate email
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!contactInfo.email || !emailRegex.test(contactInfo.email)) {
+            // Validate email - check input value directly
+            const emailValue = emailInput.value.trim();
+            if (!emailValue || !EMAIL_REGEX.test(emailValue)) {
                 isValid = false;
                 emailInput.classList.add('error');
                 emailError.classList.add('show');
