@@ -404,10 +404,10 @@
             { label: 'Fully established or widely used', value: 3 }
         ];
 
-        // Questions catalog
+        // Questions catalog (condensed to 8 key questions)
         // Note: 'category' is used for display grouping, 'categoryGroup' is used for scoring logic
         const QUESTIONS = [
-            // Strategy and maturity (Q1-Q3)
+            // Strategy (Q1-Q2)
             { 
                 id: 'strategy', 
                 category: 'Strategy and Maturity', 
@@ -422,26 +422,12 @@
                 scale: 'B',
                 categoryGroup: 'strategy'
             },
-            { 
-                id: 'sponsorship', 
-                category: 'Strategy and Maturity', 
-                text: 'How strong is management support for AI initiatives?', 
-                scale: 'A',
-                categoryGroup: 'strategy'
-            },
 
-            // Organization and governance (Q4-Q6)
+            // Governance (Q3-Q4)
             { 
                 id: 'governance', 
                 category: 'Organization and Governance', 
                 text: 'Do you have formal AI governance (policies, roles, ethics)?', 
-                scale: 'A',
-                categoryGroup: 'governance'
-            },
-            { 
-                id: 'coe', 
-                category: 'Organization and Governance', 
-                text: 'Is there a central AI team or AI lead?', 
                 scale: 'A',
                 categoryGroup: 'governance'
             },
@@ -453,7 +439,7 @@
                 categoryGroup: 'governance'
             },
 
-            // Skills and culture (Q7-Q9)
+            // Skills (Q5-Q6)
             { 
                 id: 'training', 
                 category: 'Skills and Culture', 
@@ -468,15 +454,8 @@
                 scale: 'A',
                 categoryGroup: 'skills'
             },
-            { 
-                id: 'enablement', 
-                category: 'Skills and Culture', 
-                text: 'Do you have enablement programs like AI guides or learning journeys?', 
-                scale: 'A',
-                categoryGroup: 'skills'
-            },
 
-            // Technology and use cases (Q10-Q12)
+            // Technology (Q7-Q8)
             { 
                 id: 'usecases', 
                 category: 'Technology and Use Cases', 
@@ -490,59 +469,27 @@
                 text: 'Do AI solutions generate measurable revenue or efficiency gains?', 
                 scale: 'A',
                 categoryGroup: 'technology'
-            },
-            { 
-                id: 'genai', 
-                category: 'Technology and Use Cases', 
-                text: 'Is generative AI (e.g., Copilot) in productive use?', 
-                scale: 'B',
-                categoryGroup: 'technology'
-            },
-
-            // Future and innovation (Q13-Q15)
-            { 
-                id: 'roadmap', 
-                category: 'Future and Innovation', 
-                text: 'Do you have an AI adoption roadmap?', 
-                scale: 'A',
-                categoryGroup: 'future'
-            },
-            { 
-                id: 'virtual_agents', 
-                category: 'Future and Innovation', 
-                text: 'Do you use virtual employees or AI agents?', 
-                scale: 'B',
-                categoryGroup: 'future'
-            },
-            { 
-                id: 'innovation', 
-                category: 'Future and Innovation', 
-                text: 'How actively do you experiment with new AI trends (e.g., Agentic AI)?', 
-                scale: 'A',
-                categoryGroup: 'future'
             }
         ];
 
-        // Maturity level definitions
+        // Maturity level definitions (adjusted for 8 questions, max score 24)
         const MATURITY_LEVELS = {
             1: {
                 name: 'Starting',
-                range: [0, 10],
+                range: [0, 6],
                 badge: 'level-1',
                 explanation: 'Your organization is at the beginning of its AI journey. AI strategy, governance, and adoption are at an early stage. This is a great starting point with significant opportunity for growth.',
                 recommendations: [
                     'Define an AI strategy and vision aligned with business goals',
                     'Establish AI governance framework and assign clear roles',
                     'Build foundational data infrastructure and platform capabilities',
-                    'Provide AI tools and access to key team members',
                     'Identify and launch 2-3 pilot use cases with clear success criteria',
-                    'Launch basic AI awareness training for all employees',
-                    'Create a change communication plan to build excitement and awareness'
+                    'Launch basic AI awareness training for all employees'
                 ]
             },
             2: {
                 name: 'Experimenting',
-                range: [11, 20],
+                range: [7, 12],
                 badge: 'level-2',
                 explanation: 'Your organization has started experimenting with AI through early pilots. However, governance structures and value realization processes are still limited. Focus on consolidating learnings and building sustainable practices.',
                 recommendations: [
@@ -550,14 +497,12 @@
                     'Expand governance processes and establish clear decision-making frameworks',
                     'Build and prioritize a use case funnel with business value assessment',
                     'Offer targeted enablement and training programs for different roles',
-                    'Define and track success metrics and KPIs for AI initiatives',
-                    'Create internal showcases and communities of practice',
-                    'Establish a systematic approach to scale successful pilots'
+                    'Define and track success metrics and KPIs for AI initiatives'
                 ]
             },
             3: {
                 name: 'Scaling',
-                range: [21, 32],
+                range: [13, 18],
                 badge: 'level-3',
                 explanation: 'Your organization has productive AI use cases generating measurable value. The focus now is on scaling successful initiatives, expanding reach across the organization, and building repeatable processes.',
                 recommendations: [
@@ -565,14 +510,12 @@
                     'Enable business teams through citizen development approaches',
                     'Strengthen MLOps capabilities and monitoring infrastructure',
                     'Implement FinOps practices to manage AI costs and optimize value',
-                    'Deploy advanced training programs and certification paths',
-                    'Automate compliance and governance processes',
-                    'Build reusable AI components and accelerators'
+                    'Deploy advanced training programs and certification paths'
                 ]
             },
             4: {
                 name: 'Strategic Leadership',
-                range: [33, 47],
+                range: [19, 24],
                 badge: 'level-4',
                 explanation: 'AI is strategically embedded across your organization and delivers recurring business value. Your organization is positioned as an AI leader, with mature practices and continuous innovation. Focus on maintaining leadership and exploring cutting-edge capabilities.',
                 recommendations: [
@@ -581,9 +524,7 @@
                     'Invest in innovation programs for autonomous agents and advanced generative AI',
                     'Implement enterprise-wide KPIs for AI performance and business impact',
                     'Build external partnerships and ecosystem relationships',
-                    'Ensure AI regulation readiness (e.g., EU AI Act compliance)',
-                    'Establish thought leadership through publications and speaking engagements',
-                    'Create AI ethics board and responsible AI practices'
+                    'Ensure AI regulation readiness (e.g., EU AI Act compliance)'
                 ]
             }
         };
@@ -729,13 +670,12 @@
 
         // Calculate scores
         function calculateScores() {
-            // Calculate category scores
+            // Calculate category scores (2 questions per category, max 6 points each)
             const categoryScores = {
                 strategy: 0,
                 governance: 0,
                 skills: 0,
-                technology: 0,
-                future: 0
+                technology: 0
             };
 
             QUESTIONS.forEach(question => {
@@ -743,16 +683,8 @@
                 categoryScores[question.categoryGroup] += value;
             });
 
-            // Calculate total base score
-            let totalScore = Object.values(categoryScores).reduce((sum, score) => sum + score, 0);
-
-            // Apply bonus logic
-            if (categoryScores.governance >= 6 && answers.compliance >= 2) {
-                totalScore += 1;
-            }
-            if (categoryScores.technology >= 6 && answers.impact >= 2) {
-                totalScore += 1;
-            }
+            // Calculate total score (8 questions, max 24 points)
+            const totalScore = Object.values(categoryScores).reduce((sum, score) => sum + score, 0);
 
             return {
                 total: totalScore,
@@ -767,28 +699,24 @@
             // Apply override rules - these ensure results reflect actual organizational state
             
             // Rule 1: Organizations with minimal AI usage and no governance structure
-            // should always be considered at the starting level, regardless of future plans
+            // should always be considered at the starting level, regardless of plans
             if (answers.usage <= 1 && answers.governance <= 1) {
                 return 1;
             }
 
-            // Rule 2: Organizations actively using AI with implemented use cases or generative AI
-            // in production should be at least at scaling level, as they've moved beyond experimentation
-            if (answers.usage >= 2 && (answers.usecases >= 2 || answers.genai >= 2)) {
-                // But still check if score qualifies for Level 3
-                if (total >= 21) {
-                    // Check if all categories are high for Level 4
-                    if (Object.values(categories).every(score => score >= 7)) {
-                        return 4;
-                    }
-                    return total >= 33 ? 4 : 3;
+            // Rule 2: Organizations actively using AI with implemented use cases
+            // should be at least at experimenting level
+            if (answers.usage >= 2 && answers.usecases >= 2) {
+                // Check if total score qualifies for Level 3 or 4
+                if (total >= 13) {
+                    return total >= 19 ? 4 : 3;
                 }
+                return 2;
             }
 
-            // Rule 3: Organizations with strong performance across ALL categories (7+/9 each)
-            // demonstrate strategic leadership regardless of total score, as balanced excellence
-            // across all dimensions is a key indicator of maturity
-            if (Object.values(categories).every(score => score >= 7)) {
+            // Rule 3: Organizations with strong performance across ALL categories (5+/6 each)
+            // demonstrate strategic leadership regardless of total score
+            if (Object.values(categories).every(score => score >= 5)) {
                 return 4;
             }
 
@@ -830,27 +758,23 @@
                         <h3>Category Breakdown</h3>
                         <div class="score-item">
                             <span class="score-label">Strategy and Maturity</span>
-                            <span class="score-value">${scores.categories.strategy} / 9</span>
+                            <span class="score-value">${scores.categories.strategy} / 6</span>
                         </div>
                         <div class="score-item">
                             <span class="score-label">Organization and Governance</span>
-                            <span class="score-value">${scores.categories.governance} / 9</span>
+                            <span class="score-value">${scores.categories.governance} / 6</span>
                         </div>
                         <div class="score-item">
                             <span class="score-label">Skills and Culture</span>
-                            <span class="score-value">${scores.categories.skills} / 9</span>
+                            <span class="score-value">${scores.categories.skills} / 6</span>
                         </div>
                         <div class="score-item">
                             <span class="score-label">Technology and Use Cases</span>
-                            <span class="score-value">${scores.categories.technology} / 9</span>
-                        </div>
-                        <div class="score-item">
-                            <span class="score-label">Future and Innovation</span>
-                            <span class="score-value">${scores.categories.future} / 9</span>
+                            <span class="score-value">${scores.categories.technology} / 6</span>
                         </div>
                         <div class="score-item" style="margin-top: 1rem; border-top: 2px solid #e2e8f0; padding-top: 1rem;">
                             <span class="score-label" style="font-weight: 700;">Total Score</span>
-                            <span class="score-value" style="font-size: 1.3rem;">${scores.total} / 47</span>
+                            <span class="score-value" style="font-size: 1.3rem;">${scores.total} / 24</span>
                         </div>
                     </div>
                 </div>
