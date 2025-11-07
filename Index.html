@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Self-Assessment - Evaluate Your Organization's AI Maturity</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 2rem;
+        }
+
+        .category-title {
+            font-size: 1.4rem;
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 600;
+        }
+
+        fieldset {
+            border: none;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        fieldset:hover {
+            background: #f1f5f9;
+        }
+
+        fieldset.error {
+            background: #fef2f2;
+            border: 2px solid #fca5a5;
+        }
+
+        legend {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+            padding: 0 0.5rem;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .radio-option:hover {
+            background: white;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 0.75rem;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        .radio-option input[type="radio"]:focus {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        .radio-option label {
+            cursor: pointer;
+            user-select: none;
+            flex: 1;
+        }
+
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .warning.show {
+            display: block;
+        }
+
+        .warning-text {
+            color: #92400e;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            display: block;
+            margin: 2rem auto;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:focus {
+            outline: 3px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        #results {
+            display: none;
+            margin-top: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #results.show {
+            display: block;
+        }
+
+        .result-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge.level-1 {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge.level-2 {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge.level-3 {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge.level-4 {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+
+        .result-explanation {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #475569;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+
+        .recommendations {
+            margin-top: 2rem;
+        }
+
+        .recommendations h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .recommendations ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recommendations li {
+            padding: 0.75rem 0.75rem 0.75rem 2rem;
+            margin-bottom: 0.5rem;
+            background: #f8fafc;
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .recommendations li::before {
+            content: "→";
+            position: absolute;
+            left: 0.75rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .category-scores {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .category-scores h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .score-label {
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .score-value {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            padding: 2rem;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .intro {
+                font-size: 1rem;
+            }
+
+            header {
+                padding: 2rem 1rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            fieldset {
+                padding: 1rem;
+            }
+
+            .btn-primary {
+                padding: 0.875rem 2rem;
+                font-size: 1rem;
+            }
+
+            .result-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Self-Assessment</h1>
+            <p class="intro">We will ask a few questions to help you identify the best path toward your ideal AI adoption. This assessment takes about 5-10 minutes and will provide personalized recommendations based on your organization's AI maturity.</p>
+        </header>
+
+        <main>
+            <div class="warning" id="warning" role="alert">
+                <p class="warning-text">Please answer all questions before finishing the assessment.</p>
+            </div>
+
+            <form id="assessmentForm">
+                <div id="questionsContainer"></div>
+                
+                <button type="submit" class="btn-primary">Finish Assessment</button>
+            </form>
+
+            <div id="results" aria-live="polite"></div>
+        </main>
+
+        <footer>
+            <p>This assessment provides indicative guidance and is not a substitute for professional consulting.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Question scales
+        const SCALE_A = [
+            { label: 'Not at all', value: 0 },
+            { label: 'Planned or experimental', value: 1 },
+            { label: 'Partially', value: 2 },
+            { label: 'Fully established', value: 3 }
+        ];
+
+        const SCALE_B = [
+            { label: 'Not at all', value: 0 },
+            { label: 'Planned or experimental', value: 1 },
+            { label: 'Partially or in some areas', value: 2 },
+            { label: 'Fully established or widely used', value: 3 }
+        ];
+
+        // Questions catalog
+        // Note: 'category' is used for display grouping, 'categoryGroup' is used for scoring logic
+        const QUESTIONS = [
+            // Strategy and maturity (Q1-Q3)
+            { 
+                id: 'strategy', 
+                category: 'Strategy and Maturity', 
+                text: 'How much is AI part of your corporate strategy?', 
+                scale: 'A',
+                categoryGroup: 'strategy'
+            },
+            { 
+                id: 'usage', 
+                category: 'Strategy and Maturity', 
+                text: 'How is AI currently used in your organization?', 
+                scale: 'B',
+                categoryGroup: 'strategy'
+            },
+            { 
+                id: 'sponsorship', 
+                category: 'Strategy and Maturity', 
+                text: 'How strong is management support for AI initiatives?', 
+                scale: 'A',
+                categoryGroup: 'strategy'
+            },
+
+            // Organization and governance (Q4-Q6)
+            { 
+                id: 'governance', 
+                category: 'Organization and Governance', 
+                text: 'Do you have formal AI governance (policies, roles, ethics)?', 
+                scale: 'A',
+                categoryGroup: 'governance'
+            },
+            { 
+                id: 'coe', 
+                category: 'Organization and Governance', 
+                text: 'Is there a central AI team or AI lead?', 
+                scale: 'A',
+                categoryGroup: 'governance'
+            },
+            { 
+                id: 'compliance', 
+                category: 'Organization and Governance', 
+                text: 'How are data security and compliance managed for AI?', 
+                scale: 'A',
+                categoryGroup: 'governance'
+            },
+
+            // Skills and culture (Q7-Q9)
+            { 
+                id: 'training', 
+                category: 'Skills and Culture', 
+                text: 'How well are employees trained or informed about AI?', 
+                scale: 'A',
+                categoryGroup: 'skills'
+            },
+            { 
+                id: 'culture', 
+                category: 'Skills and Culture', 
+                text: "How open is your organization's culture toward AI and automation?", 
+                scale: 'A',
+                categoryGroup: 'skills'
+            },
+            { 
+                id: 'enablement', 
+                category: 'Skills and Culture', 
+                text: 'Do you have enablement programs like AI guides or learning journeys?', 
+                scale: 'A',
+                categoryGroup: 'skills'
+            },
+
+            // Technology and use cases (Q10-Q12)
+            { 
+                id: 'usecases', 
+                category: 'Technology and Use Cases', 
+                text: 'How many AI use cases have been implemented?', 
+                scale: 'B',
+                categoryGroup: 'technology'
+            },
+            { 
+                id: 'impact', 
+                category: 'Technology and Use Cases', 
+                text: 'Do AI solutions generate measurable revenue or efficiency gains?', 
+                scale: 'A',
+                categoryGroup: 'technology'
+            },
+            { 
+                id: 'genai', 
+                category: 'Technology and Use Cases', 
+                text: 'Is generative AI (e.g., Copilot) in productive use?', 
+                scale: 'B',
+                categoryGroup: 'technology'
+            },
+
+            // Future and innovation (Q13-Q15)
+            { 
+                id: 'roadmap', 
+                category: 'Future and Innovation', 
+                text: 'Do you have an AI adoption roadmap?', 
+                scale: 'A',
+                categoryGroup: 'future'
+            },
+            { 
+                id: 'virtual_agents', 
+                category: 'Future and Innovation', 
+                text: 'Do you use virtual employees or AI agents?', 
+                scale: 'B',
+                categoryGroup: 'future'
+            },
+            { 
+                id: 'innovation', 
+                category: 'Future and Innovation', 
+                text: 'How actively do you experiment with new AI trends (e.g., Agentic AI)?', 
+                scale: 'A',
+                categoryGroup: 'future'
+            }
+        ];
+
+        // Maturity level definitions
+        const MATURITY_LEVELS = {
+            1: {
+                name: 'Starting',
+                range: [0, 10],
+                badge: 'level-1',
+                explanation: 'Your organization is at the beginning of its AI journey. AI strategy, governance, and adoption are at an early stage. This is a great starting point with significant opportunity for growth.',
+                recommendations: [
+                    'Define an AI strategy and vision aligned with business goals',
+                    'Establish AI governance framework and assign clear roles',
+                    'Build foundational data infrastructure and platform capabilities',
+                    'Provide AI tools and access to key team members',
+                    'Identify and launch 2-3 pilot use cases with clear success criteria',
+                    'Launch basic AI awareness training for all employees',
+                    'Create a change communication plan to build excitement and awareness'
+                ]
+            },
+            2: {
+                name: 'Experimenting',
+                range: [11, 20],
+                badge: 'level-2',
+                explanation: 'Your organization has started experimenting with AI through early pilots. However, governance structures and value realization processes are still limited. Focus on consolidating learnings and building sustainable practices.',
+                recommendations: [
+                    'Consolidate platform and establish technical standards',
+                    'Expand governance processes and establish clear decision-making frameworks',
+                    'Build and prioritize a use case funnel with business value assessment',
+                    'Offer targeted enablement and training programs for different roles',
+                    'Define and track success metrics and KPIs for AI initiatives',
+                    'Create internal showcases and communities of practice',
+                    'Establish a systematic approach to scale successful pilots'
+                ]
+            },
+            3: {
+                name: 'Scaling',
+                range: [21, 32],
+                badge: 'level-3',
+                explanation: 'Your organization has productive AI use cases generating measurable value. The focus now is on scaling successful initiatives, expanding reach across the organization, and building repeatable processes.',
+                recommendations: [
+                    'Expand use case portfolio across different business units',
+                    'Enable business teams through citizen development approaches',
+                    'Strengthen MLOps capabilities and monitoring infrastructure',
+                    'Implement FinOps practices to manage AI costs and optimize value',
+                    'Deploy advanced training programs and certification paths',
+                    'Automate compliance and governance processes',
+                    'Build reusable AI components and accelerators'
+                ]
+            },
+            4: {
+                name: 'Strategic Leadership',
+                range: [33, 47],
+                badge: 'level-4',
+                explanation: 'AI is strategically embedded across your organization and delivers recurring business value. Your organization is positioned as an AI leader, with mature practices and continuous innovation. Focus on maintaining leadership and exploring cutting-edge capabilities.',
+                recommendations: [
+                    'Define and execute a long-term enterprise AI roadmap',
+                    'Mature governance structures and establish a comprehensive AI Center of Excellence',
+                    'Invest in innovation programs for autonomous agents and advanced generative AI',
+                    'Implement enterprise-wide KPIs for AI performance and business impact',
+                    'Build external partnerships and ecosystem relationships',
+                    'Ensure AI regulation readiness (e.g., EU AI Act compliance)',
+                    'Establish thought leadership through publications and speaking engagements',
+                    'Create AI ethics board and responsible AI practices'
+                ]
+            }
+        };
+
+        // State management
+        let answers = {};
+
+        // Initialize the form
+        function initForm() {
+            const container = document.getElementById('questionsContainer');
+            let currentCategory = '';
+            let categorySection = null;
+
+            QUESTIONS.forEach((question, index) => {
+                // Create new category section if needed
+                if (question.category !== currentCategory) {
+                    currentCategory = question.category;
+                    categorySection = document.createElement('section');
+                    categorySection.innerHTML = `<h2 class="category-title">${currentCategory}</h2>`;
+                    container.appendChild(categorySection);
+                }
+
+                // Create fieldset for question
+                const fieldset = document.createElement('fieldset');
+                fieldset.id = `question-${question.id}`;
+                
+                const legend = document.createElement('legend');
+                legend.textContent = `${index + 1}. ${question.text}`;
+                fieldset.appendChild(legend);
+
+                const radioGroup = document.createElement('div');
+                radioGroup.className = 'radio-group';
+                radioGroup.setAttribute('role', 'radiogroup');
+                radioGroup.setAttribute('aria-labelledby', `legend-${question.id}`);
+
+                // Get appropriate scale
+                const scale = question.scale === 'A' ? SCALE_A : SCALE_B;
+
+                scale.forEach(option => {
+                    const radioOption = document.createElement('div');
+                    radioOption.className = 'radio-option';
+
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = question.id;
+                    input.value = option.value;
+                    input.id = `${question.id}-${option.value}`;
+                    input.addEventListener('change', () => handleAnswerChange(question.id, option.value));
+
+                    const label = document.createElement('label');
+                    label.htmlFor = input.id;
+                    label.textContent = option.label;
+
+                    radioOption.appendChild(input);
+                    radioOption.appendChild(label);
+                    radioGroup.appendChild(radioOption);
+                });
+
+                fieldset.appendChild(radioGroup);
+                categorySection.appendChild(fieldset);
+            });
+
+            // Load saved answers if available
+            loadSavedAnswers();
+        }
+
+        // Handle answer change
+        function handleAnswerChange(questionId, value) {
+            answers[questionId] = parseInt(value);
+            
+            // Remove error state if present
+            const fieldset = document.getElementById(`question-${questionId}`);
+            if (fieldset) {
+                fieldset.classList.remove('error');
+            }
+
+            // Save to localStorage
+            saveAnswers();
+        }
+
+        // Save answers to localStorage
+        function saveAnswers() {
+            try {
+                localStorage.setItem('ai_assessment_answers', JSON.stringify(answers));
+            } catch (e) {
+                // Note: This is safe to fail silently - assessment will still work, just won't persist between sessions
+                console.warn('Could not save assessment progress. Your answers will not be saved between sessions.', e);
+            }
+        }
+
+        // Load saved answers from localStorage
+        function loadSavedAnswers() {
+            try {
+                const saved = localStorage.getItem('ai_assessment_answers');
+                if (saved) {
+                    answers = JSON.parse(saved);
+                    
+                    // Populate form with saved answers
+                    // Note: questionId values are controlled (from QUESTIONS array), not user input, so querySelector is safe
+                    Object.keys(answers).forEach(questionId => {
+                        const input = document.querySelector(`input[name="${questionId}"][value="${answers[questionId]}"]`);
+                        if (input) {
+                            input.checked = true;
+                        }
+                    });
+                }
+            } catch (e) {
+                // Note: This is safe to fail silently - assessment will start fresh if saved data can't be loaded
+                console.warn('Could not load previously saved assessment progress. Starting fresh.', e);
+            }
+        }
+
+        // Validate form
+        function validateForm() {
+            const warning = document.getElementById('warning');
+            let isValid = true;
+            let firstError = null;
+
+            QUESTIONS.forEach(question => {
+                const fieldset = document.getElementById(`question-${question.id}`);
+                if (answers[question.id] === undefined) {
+                    isValid = false;
+                    if (fieldset) {
+                        fieldset.classList.add('error');
+                        if (!firstError) {
+                            firstError = fieldset;
+                        }
+                    }
+                }
+            });
+
+            if (!isValid) {
+                warning.classList.add('show');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            } else {
+                warning.classList.remove('show');
+            }
+
+            return isValid;
+        }
+
+        // Calculate scores
+        function calculateScores() {
+            // Calculate category scores
+            const categoryScores = {
+                strategy: 0,
+                governance: 0,
+                skills: 0,
+                technology: 0,
+                future: 0
+            };
+
+            QUESTIONS.forEach(question => {
+                const value = answers[question.id] || 0;
+                categoryScores[question.categoryGroup] += value;
+            });
+
+            // Calculate total base score
+            let totalScore = Object.values(categoryScores).reduce((sum, score) => sum + score, 0);
+
+            // Apply bonus logic
+            if (categoryScores.governance >= 6 && answers.compliance >= 2) {
+                totalScore += 1;
+            }
+            if (categoryScores.technology >= 6 && answers.impact >= 2) {
+                totalScore += 1;
+            }
+
+            return {
+                total: totalScore,
+                categories: categoryScores
+            };
+        }
+
+        // Determine maturity level
+        function determineMaturityLevel(scores) {
+            const { total, categories } = scores;
+
+            // Apply override rules - these ensure results reflect actual organizational state
+            
+            // Rule 1: Organizations with minimal AI usage and no governance structure
+            // should always be considered at the starting level, regardless of future plans
+            if (answers.usage <= 1 && answers.governance <= 1) {
+                return 1;
+            }
+
+            // Rule 2: Organizations actively using AI with implemented use cases or generative AI
+            // in production should be at least at scaling level, as they've moved beyond experimentation
+            if (answers.usage >= 2 && (answers.usecases >= 2 || answers.genai >= 2)) {
+                // But still check if score qualifies for Level 3
+                if (total >= 21) {
+                    // Check if all categories are high for Level 4
+                    if (Object.values(categories).every(score => score >= 7)) {
+                        return 4;
+                    }
+                    return total >= 33 ? 4 : 3;
+                }
+            }
+
+            // Rule 3: Organizations with strong performance across ALL categories (7+/9 each)
+            // demonstrate strategic leadership regardless of total score, as balanced excellence
+            // across all dimensions is a key indicator of maturity
+            if (Object.values(categories).every(score => score >= 7)) {
+                return 4;
+            }
+
+            // Standard level determination by score
+            for (let level = 4; level >= 1; level--) {
+                const levelDef = MATURITY_LEVELS[level];
+                if (total >= levelDef.range[0] && total <= levelDef.range[1]) {
+                    return level;
+                }
+            }
+
+            return 1; // Default to Level 1
+        }
+
+        // Render results
+        // Note: All content (levelDef.name, explanation, recommendations) comes from the hardcoded 
+        // MATURITY_LEVELS object, not user input, so template literals are safe here
+        function renderResults(level, scores) {
+            const resultsDiv = document.getElementById('results');
+            const levelDef = MATURITY_LEVELS[level];
+
+            const html = `
+                <div class="result-card">
+                    <h2 class="result-title">Your AI Maturity Level: ${levelDef.name}</h2>
+                    <span class="badge ${levelDef.badge}">Level ${level}: ${levelDef.name}</span>
+                    
+                    <div class="result-explanation">
+                        <p>${levelDef.explanation}</p>
+                    </div>
+
+                    <div class="recommendations">
+                        <h3>Recommended Next Steps</h3>
+                        <ul>
+                            ${levelDef.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="category-scores">
+                        <h3>Category Breakdown</h3>
+                        <div class="score-item">
+                            <span class="score-label">Strategy and Maturity</span>
+                            <span class="score-value">${scores.categories.strategy} / 9</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">Organization and Governance</span>
+                            <span class="score-value">${scores.categories.governance} / 9</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">Skills and Culture</span>
+                            <span class="score-value">${scores.categories.skills} / 9</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">Technology and Use Cases</span>
+                            <span class="score-value">${scores.categories.technology} / 9</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">Future and Innovation</span>
+                            <span class="score-value">${scores.categories.future} / 9</span>
+                        </div>
+                        <div class="score-item" style="margin-top: 1rem; border-top: 2px solid #e2e8f0; padding-top: 1rem;">
+                            <span class="score-label" style="font-weight: 700;">Total Score</span>
+                            <span class="score-value" style="font-size: 1.3rem;">${scores.total} / 47</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = html;
+            resultsDiv.classList.add('show');
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Handle form submission
+        function handleSubmit(e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            // Calculate scores and determine level
+            const scores = calculateScores();
+            const level = determineMaturityLevel(scores);
+
+            // Render results
+            renderResults(level, scores);
+        }
+
+        // Initialize form on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initForm();
+
+            const form = document.getElementById('assessmentForm');
+            form.addEventListener('submit', handleSubmit);
+        });
+    </script>
+</body>
+</html>
